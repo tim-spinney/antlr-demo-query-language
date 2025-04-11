@@ -1,2 +1,7 @@
 T__0=1
+Comparator=2
+Whitespace=3
+IntLiteral=4
+Identifier=5
 'WHERE'=1
+'it'=5

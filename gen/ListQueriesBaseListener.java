@@ -23,6 +23,18 @@ public class ListQueriesBaseListener implements ListQueriesListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitQuery(ListQueriesParser.QueryContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNumericExpression(ListQueriesParser.NumericExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNumericExpression(ListQueriesParser.NumericExpressionContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
