@@ -4,7 +4,10 @@ query: 'WHERE' numericExpression Comparator numericExpression EOF ;
 
 // listLiteral: '[' listMember+ ']' ;
 
-numericExpression: numericExpression NumericBinaryOperator numericExpression
+numericExpression:
+    numericExpression '*' numericExpression
+  | numericExpression '+' numericExpression
+  | numericExpression '%' numericExpression
   | IntLiteral
   | Identifier ;
 
@@ -12,8 +15,6 @@ numericExpression: numericExpression NumericBinaryOperator numericExpression
 // 2. How do you add parenthetical groupings?
 // 3. add support for evaluating these expressions to Main
 // numericBinaryExpression: '(' numericExpression NumericBinaryOperator numericExpression ')' ;
-
-NumericBinaryOperator: '*' | '+' | '%' ;
 
 Comparator: '==' | '<>' | '>' | '<' | '>=' | '<=' ;
 

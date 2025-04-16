@@ -16,8 +16,8 @@ public class ListQueriesParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, NumericBinaryOperator=2, Comparator=3, Whitespace=4, IntLiteral=5, 
-		Identifier=6;
+		T__0=1, T__1=2, T__2=3, T__3=4, Comparator=5, Whitespace=6, IntLiteral=7, 
+		Identifier=8;
 	public static final int
 		RULE_query = 0, RULE_numericExpression = 1;
 	private static String[] makeRuleNames() {
@@ -29,13 +29,13 @@ public class ListQueriesParser extends Parser {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'WHERE'", null, null, null, null, "'it'"
+			null, "'WHERE'", "'*'", "'+'", "'%'", null, null, null, "'it'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, null, "NumericBinaryOperator", "Comparator", "Whitespace", "IntLiteral", 
+			null, null, null, null, null, "Comparator", "Whitespace", "IntLiteral", 
 			"Identifier"
 		};
 	}
@@ -153,7 +153,6 @@ public class ListQueriesParser extends Parser {
 		public NumericExpressionContext numericExpression(int i) {
 			return getRuleContext(NumericExpressionContext.class,i);
 		}
-		public TerminalNode NumericBinaryOperator() { return getToken(ListQueriesParser.NumericBinaryOperator, 0); }
 		public NumericExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -202,29 +201,59 @@ public class ListQueriesParser extends Parser {
 				throw new NoViableAltException(this);
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(20);
+			setState(26);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,1,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,2,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					{
-					_localctx = new NumericExpressionContext(_parentctx, _parentState);
-					pushNewRecursionContext(_localctx, _startState, RULE_numericExpression);
-					setState(15);
-					if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
-					setState(16);
-					match(NumericBinaryOperator);
-					setState(17);
-					numericExpression(4);
+					setState(24);
+					_errHandler.sync(this);
+					switch ( getInterpreter().adaptivePredict(_input,1,_ctx) ) {
+					case 1:
+						{
+						_localctx = new NumericExpressionContext(_parentctx, _parentState);
+						pushNewRecursionContext(_localctx, _startState, RULE_numericExpression);
+						setState(15);
+						if (!(precpred(_ctx, 5))) throw new FailedPredicateException(this, "precpred(_ctx, 5)");
+						setState(16);
+						match(T__1);
+						setState(17);
+						numericExpression(6);
+						}
+						break;
+					case 2:
+						{
+						_localctx = new NumericExpressionContext(_parentctx, _parentState);
+						pushNewRecursionContext(_localctx, _startState, RULE_numericExpression);
+						setState(18);
+						if (!(precpred(_ctx, 4))) throw new FailedPredicateException(this, "precpred(_ctx, 4)");
+						setState(19);
+						match(T__2);
+						setState(20);
+						numericExpression(5);
+						}
+						break;
+					case 3:
+						{
+						_localctx = new NumericExpressionContext(_parentctx, _parentState);
+						pushNewRecursionContext(_localctx, _startState, RULE_numericExpression);
+						setState(21);
+						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
+						setState(22);
+						match(T__3);
+						setState(23);
+						numericExpression(4);
+						}
+						break;
 					}
 					} 
 				}
-				setState(22);
+				setState(28);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,1,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,2,_ctx);
 			}
 			}
 		}
@@ -249,28 +278,37 @@ public class ListQueriesParser extends Parser {
 	private boolean numericExpression_sempred(NumericExpressionContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 0:
+			return precpred(_ctx, 5);
+		case 1:
+			return precpred(_ctx, 4);
+		case 2:
 			return precpred(_ctx, 3);
 		}
 		return true;
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001\u0006\u0018\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001"+
-		"\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000"+
-		"\u0001\u0001\u0001\u0001\u0001\u0001\u0003\u0001\u000e\b\u0001\u0001\u0001"+
-		"\u0001\u0001\u0001\u0001\u0005\u0001\u0013\b\u0001\n\u0001\f\u0001\u0016"+
-		"\t\u0001\u0001\u0001\u0000\u0001\u0002\u0002\u0000\u0002\u0000\u0000\u0017"+
-		"\u0000\u0004\u0001\u0000\u0000\u0000\u0002\r\u0001\u0000\u0000\u0000\u0004"+
-		"\u0005\u0005\u0001\u0000\u0000\u0005\u0006\u0003\u0002\u0001\u0000\u0006"+
-		"\u0007\u0005\u0003\u0000\u0000\u0007\b\u0003\u0002\u0001\u0000\b\t\u0005"+
-		"\u0000\u0000\u0001\t\u0001\u0001\u0000\u0000\u0000\n\u000b\u0006\u0001"+
-		"\uffff\uffff\u0000\u000b\u000e\u0005\u0005\u0000\u0000\f\u000e\u0005\u0006"+
-		"\u0000\u0000\r\n\u0001\u0000\u0000\u0000\r\f\u0001\u0000\u0000\u0000\u000e"+
-		"\u0014\u0001\u0000\u0000\u0000\u000f\u0010\n\u0003\u0000\u0000\u0010\u0011"+
-		"\u0005\u0002\u0000\u0000\u0011\u0013\u0003\u0002\u0001\u0004\u0012\u000f"+
-		"\u0001\u0000\u0000\u0000\u0013\u0016\u0001\u0000\u0000\u0000\u0014\u0012"+
-		"\u0001\u0000\u0000\u0000\u0014\u0015\u0001\u0000\u0000\u0000\u0015\u0003"+
-		"\u0001\u0000\u0000\u0000\u0016\u0014\u0001\u0000\u0000\u0000\u0002\r\u0014";
+		"\u0004\u0001\b\u001e\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0001"+
+		"\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001"+
+		"\u0001\u0001\u0001\u0001\u0001\u0003\u0001\u000e\b\u0001\u0001\u0001\u0001"+
+		"\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001"+
+		"\u0001\u0001\u0001\u0005\u0001\u0019\b\u0001\n\u0001\f\u0001\u001c\t\u0001"+
+		"\u0001\u0001\u0000\u0001\u0002\u0002\u0000\u0002\u0000\u0000\u001f\u0000"+
+		"\u0004\u0001\u0000\u0000\u0000\u0002\r\u0001\u0000\u0000\u0000\u0004\u0005"+
+		"\u0005\u0001\u0000\u0000\u0005\u0006\u0003\u0002\u0001\u0000\u0006\u0007"+
+		"\u0005\u0005\u0000\u0000\u0007\b\u0003\u0002\u0001\u0000\b\t\u0005\u0000"+
+		"\u0000\u0001\t\u0001\u0001\u0000\u0000\u0000\n\u000b\u0006\u0001\uffff"+
+		"\uffff\u0000\u000b\u000e\u0005\u0007\u0000\u0000\f\u000e\u0005\b\u0000"+
+		"\u0000\r\n\u0001\u0000\u0000\u0000\r\f\u0001\u0000\u0000\u0000\u000e\u001a"+
+		"\u0001\u0000\u0000\u0000\u000f\u0010\n\u0005\u0000\u0000\u0010\u0011\u0005"+
+		"\u0002\u0000\u0000\u0011\u0019\u0003\u0002\u0001\u0006\u0012\u0013\n\u0004"+
+		"\u0000\u0000\u0013\u0014\u0005\u0003\u0000\u0000\u0014\u0019\u0003\u0002"+
+		"\u0001\u0005\u0015\u0016\n\u0003\u0000\u0000\u0016\u0017\u0005\u0004\u0000"+
+		"\u0000\u0017\u0019\u0003\u0002\u0001\u0004\u0018\u000f\u0001\u0000\u0000"+
+		"\u0000\u0018\u0012\u0001\u0000\u0000\u0000\u0018\u0015\u0001\u0000\u0000"+
+		"\u0000\u0019\u001c\u0001\u0000\u0000\u0000\u001a\u0018\u0001\u0000\u0000"+
+		"\u0000\u001a\u001b\u0001\u0000\u0000\u0000\u001b\u0003\u0001\u0000\u0000"+
+		"\u0000\u001c\u001a\u0001\u0000\u0000\u0000\u0003\r\u0018\u001a";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
