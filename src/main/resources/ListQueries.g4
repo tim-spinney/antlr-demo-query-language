@@ -4,14 +4,16 @@ query: 'WHERE' numericExpression Comparator numericExpression EOF ;
 
 // listLiteral: '[' listMember+ ']' ;
 
-numericExpression: IntLiteral | Identifier | numericBinaryExpression ;
+numericExpression: numericExpression NumericBinaryOperator numericExpression
+  | IntLiteral
+  | Identifier ;
 
 // 1. How do you avoid infinite recursion when starting with numericExpression ?
 // 2. How do you add parenthetical groupings?
 // 3. add support for evaluating these expressions to Main
-numericBinaryExpression: Identifier NumericBinaryOperator numericExpression ;
+// numericBinaryExpression: '(' numericExpression NumericBinaryOperator numericExpression ')' ;
 
-NumericBinaryOperator: '%' ;
+NumericBinaryOperator: '*' | '+' | '%' ;
 
 Comparator: '==' | '<>' | '>' | '<' | '>=' | '<=' ;
 

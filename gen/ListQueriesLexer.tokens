@@ -1,7 +1,8 @@
 T__0=1
-Comparator=2
-Whitespace=3
-IntLiteral=4
-Identifier=5
+NumericBinaryOperator=2
+Comparator=3
+Whitespace=4
+IntLiteral=5
+Identifier=6
 'WHERE'=1
-'it'=5
+'it'=6
