@@ -2,14 +2,21 @@ grammar ListQueries;
 
 query: 'WHERE' numericExpression Comparator numericExpression EOF ;
 
-// listLiteral: '[' listMember+ ']' ;
+listLiteral: '[' listMember+ ']' ;
+
+listMember: IntLiteral | Identifier ;
 
 numericExpression:
-    numericExpression '*' numericExpression
-  | numericExpression '+' numericExpression
-  | numericExpression '%' numericExpression
+    numericExpression (Mult | Div) numericExpression
+  | numericExpression Add numericExpression
+  | numericExpression Mod numericExpression
   | IntLiteral
   | Identifier ;
+
+Mult: '*' ;
+Div: '/' ;
+Add: '+' ;
+Mod: '%' ;
 
 // 1. How do you avoid infinite recursion when starting with numericExpression ?
 // 2. How do you add parenthetical groupings?

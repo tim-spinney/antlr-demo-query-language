@@ -17,6 +17,26 @@ public interface ListQueriesListener extends ParseTreeListener {
 	 */
 	void exitQuery(ListQueriesParser.QueryContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link ListQueriesParser#listLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void enterListLiteral(ListQueriesParser.ListLiteralContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ListQueriesParser#listLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void exitListLiteral(ListQueriesParser.ListLiteralContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ListQueriesParser#listMember}.
+	 * @param ctx the parse tree
+	 */
+	void enterListMember(ListQueriesParser.ListMemberContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ListQueriesParser#listMember}.
+	 * @param ctx the parse tree
+	 */
+	void exitListMember(ListQueriesParser.ListMemberContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link ListQueriesParser#numericExpression}.
 	 * @param ctx the parse tree
 	 */
