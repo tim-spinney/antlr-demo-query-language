@@ -2,10 +2,6 @@ grammar ListQueries;
 
 query: 'WHERE' numericExpression Comparator numericExpression EOF ;
 
-listLiteral: '[' listMember+ ']' ;
-
-listMember: IntLiteral | Identifier ;
-
 numericExpression:
     numericExpression (Mult | Div) numericExpression
   | numericExpression Add numericExpression

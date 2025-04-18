@@ -21,7 +21,7 @@ public class Main {
         ListQueriesParser.QueryContext queryContext = parser.query();
 
         ParseTreeWalker walker = new ParseTreeWalker();
-        if(args[0].equals("-d")) {
+        if(args.length > 0 && args[0].equals("-d")) {
             walker.walk(new DebugTreeListener(parser), queryContext);
         }
 
