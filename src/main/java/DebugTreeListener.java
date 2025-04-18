@@ -1,15 +1,10 @@
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class DebugTreeListener extends ListQueriesBaseListener {
-    private final ListQueriesParser parser;
+public class DebugTreeListener extends QueriesBaseListener {
+    private final QueriesParser parser;
 
-    public DebugTreeListener(ListQueriesParser parser) {
+    public DebugTreeListener(QueriesParser parser) {
         this.parser = parser;
-    }
-
-    @Override
-    public void enterQuery(ListQueriesParser.QueryContext ctx) {
-
     }
 
     @Override

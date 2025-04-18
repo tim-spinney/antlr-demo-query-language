@@ -1,4 +1,4 @@
-// Generated from src/main/resources/ListQueries.g4 by ANTLR 4.13.2
+// Generated from src/main/resources/Queries.g4 by ANTLR 4.13.2
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue", "this-escape"})
-public class ListQueriesParser extends Parser {
+public class QueriesParser extends Parser {
 	static { RuntimeMetaData.checkVersion("4.13.2", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
@@ -74,7 +74,7 @@ public class ListQueriesParser extends Parser {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "ListQueries.g4"; }
+	public String getGrammarFileName() { return "Queries.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
@@ -85,7 +85,7 @@ public class ListQueriesParser extends Parser {
 	@Override
 	public ATN getATN() { return _ATN; }
 
-	public ListQueriesParser(TokenStream input) {
+	public QueriesParser(TokenStream input) {
 		super(input);
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
@@ -98,19 +98,19 @@ public class ListQueriesParser extends Parser {
 		public NumericExpressionContext numericExpression(int i) {
 			return getRuleContext(NumericExpressionContext.class,i);
 		}
-		public TerminalNode Comparator() { return getToken(ListQueriesParser.Comparator, 0); }
-		public TerminalNode EOF() { return getToken(ListQueriesParser.EOF, 0); }
+		public TerminalNode Comparator() { return getToken(QueriesParser.Comparator, 0); }
+		public TerminalNode EOF() { return getToken(QueriesParser.EOF, 0); }
 		public QueryContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_query; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ListQueriesListener ) ((ListQueriesListener)listener).enterQuery(this);
+			if ( listener instanceof QueriesListener ) ((QueriesListener)listener).enterQuery(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ListQueriesListener ) ((ListQueriesListener)listener).exitQuery(this);
+			if ( listener instanceof QueriesListener ) ((QueriesListener)listener).exitQuery(this);
 		}
 	}
 
@@ -145,29 +145,29 @@ public class ListQueriesParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class NumericExpressionContext extends ParserRuleContext {
-		public TerminalNode IntLiteral() { return getToken(ListQueriesParser.IntLiteral, 0); }
-		public TerminalNode Identifier() { return getToken(ListQueriesParser.Identifier, 0); }
+		public TerminalNode IntLiteral() { return getToken(QueriesParser.IntLiteral, 0); }
+		public TerminalNode Identifier() { return getToken(QueriesParser.Identifier, 0); }
 		public List<NumericExpressionContext> numericExpression() {
 			return getRuleContexts(NumericExpressionContext.class);
 		}
 		public NumericExpressionContext numericExpression(int i) {
 			return getRuleContext(NumericExpressionContext.class,i);
 		}
-		public TerminalNode Mult() { return getToken(ListQueriesParser.Mult, 0); }
-		public TerminalNode Div() { return getToken(ListQueriesParser.Div, 0); }
-		public TerminalNode Add() { return getToken(ListQueriesParser.Add, 0); }
-		public TerminalNode Mod() { return getToken(ListQueriesParser.Mod, 0); }
+		public TerminalNode Mult() { return getToken(QueriesParser.Mult, 0); }
+		public TerminalNode Div() { return getToken(QueriesParser.Div, 0); }
+		public TerminalNode Add() { return getToken(QueriesParser.Add, 0); }
+		public TerminalNode Mod() { return getToken(QueriesParser.Mod, 0); }
 		public NumericExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_numericExpression; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ListQueriesListener ) ((ListQueriesListener)listener).enterNumericExpression(this);
+			if ( listener instanceof QueriesListener ) ((QueriesListener)listener).enterNumericExpression(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ListQueriesListener ) ((ListQueriesListener)listener).exitNumericExpression(this);
+			if ( listener instanceof QueriesListener ) ((QueriesListener)listener).exitNumericExpression(this);
 		}
 	}
 

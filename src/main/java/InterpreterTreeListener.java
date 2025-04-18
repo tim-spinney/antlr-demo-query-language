@@ -1,6 +1,6 @@
 import java.util.Stack;
 
-public class InterpreterTreeListener extends ListQueriesBaseListener {
+public class InterpreterTreeListener extends QueriesBaseListener {
     private final Stack<Object> evalStack = new Stack<>();
 
     private final int it;
@@ -12,7 +12,7 @@ public class InterpreterTreeListener extends ListQueriesBaseListener {
     public boolean getResult() { return (boolean)evalStack.peek(); }
 
     @Override
-    public void exitQuery(ListQueriesParser.QueryContext ctx) {
+    public void exitQuery(QueriesParser.QueryContext ctx) {
         int rhs = (int) evalStack.pop();
         int lhs = (int) evalStack.pop();
         switch(ctx.Comparator().getSymbol().getText()) {
@@ -38,7 +38,7 @@ public class InterpreterTreeListener extends ListQueriesBaseListener {
     }
 
     @Override
-    public void exitNumericExpression(ListQueriesParser.NumericExpressionContext ctx) {
+    public void exitNumericExpression(QueriesParser.NumericExpressionContext ctx) {
         if(ctx.Mult() != null) {
             evalStack.push((int)evalStack.pop() * (int)evalStack.pop());
         } else if(ctx.Add() != null) {

@@ -14,11 +14,11 @@ public class Main {
         System.out.println(input);
 
         CharStream inputStream = CharStreams.fromString(input);
-        ListQueriesLexer lexer = new ListQueriesLexer(inputStream);
+        QueriesLexer lexer = new QueriesLexer(inputStream);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
 
-        ListQueriesParser parser = new ListQueriesParser(tokenStream);
-        ListQueriesParser.QueryContext queryContext = parser.query();
+        QueriesParser parser = new QueriesParser(tokenStream);
+        QueriesParser.QueryContext queryContext = parser.query();
 
         ParseTreeWalker walker = new ParseTreeWalker();
         if(args.length > 0 && args[0].equals("-d")) {

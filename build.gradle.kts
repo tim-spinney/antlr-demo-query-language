@@ -25,9 +25,8 @@ sourceSets {
     }
 }
 
-tasks.register<JavaExec>("genParser") {
-    
+tasks.register<JavaExec>("genQueryParser") {
     mainClass.set("org.antlr.v4.Tool")
     classpath = sourceSets["main"].runtimeClasspath
-    setArgsString("-o gen/ src/main/resources/ListQueries.g4")
+    setArgsString("-o gen/ src/main/resources/Queries.g4")
 }

@@ -1,4 +1,4 @@
-grammar ListQueries;
+grammar Queries;
 
 query: 'WHERE' numericExpression Comparator numericExpression EOF ;
 
