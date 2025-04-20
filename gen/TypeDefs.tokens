@@ -1,0 +1,17 @@
+T__0=1
+T__1=2
+T__2=3
+T__3=4
+T__4=5
+TypeName=6
+FieldName=7
+ReferenceModifier=8
+NullableModifier=9
+WS=10
+'TYPE'=1
+'{'=2
+','=3
+'}'=4
+':'=5
+'&'=8
+'?'=9

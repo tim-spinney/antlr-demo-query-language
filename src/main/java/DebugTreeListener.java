@@ -1,9 +1,10 @@
+import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class DebugTreeListener extends QueriesBaseListener {
-    private final QueriesParser parser;
+    private final Parser parser;
 
-    public DebugTreeListener(QueriesParser parser) {
+    public DebugTreeListener(Parser parser) {
         this.parser = parser;
     }
 

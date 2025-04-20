@@ -1,5 +1,6 @@
 plugins {
     id("java")
+    kotlin("jvm") version "2.1.20"
 }
 
 group = "edu.seattleu"
@@ -29,4 +30,10 @@ tasks.register<JavaExec>("genQueryParser") {
     mainClass.set("org.antlr.v4.Tool")
     classpath = sourceSets["main"].runtimeClasspath
     setArgsString("-o gen/ src/main/resources/Queries.g4")
+}
+
+tasks.register<JavaExec>("genTypeDefsParser") {
+    mainClass.set("org.antlr.v4.Tool")
+    classpath = sourceSets["main"].runtimeClasspath
+    setArgsString("-o gen/ src/main/resources/TypeDefs.g4")
 }
