@@ -1,0 +1,4 @@
+TYPE Point {
+  x: Int
+  y: Int
+}

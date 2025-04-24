@@ -1,0 +1,10 @@
+TYPE Point {
+  x: Int,
+  y: Int
+}
+
+TYPE Rectangle {
+  topLeft: Point,
+  width: Int,
+  height: Int
+}

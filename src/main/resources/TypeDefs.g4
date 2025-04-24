@@ -1,6 +1,6 @@
 grammar TypeDefs;
 
-typeDefs: typeDef+ ;
+typeDefs: typeDef+ EOF;
 
 typeDef: 'TYPE' TypeName '{' fieldDef (',' fieldDef)* '}' ;
 
