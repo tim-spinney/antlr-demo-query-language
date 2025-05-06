@@ -17,6 +17,16 @@ public interface QueriesListener extends ParseTreeListener {
 	 */
 	void exitQuery(QueriesParser.QueryContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link QueriesParser#logicalExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterLogicalExpression(QueriesParser.LogicalExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link QueriesParser#logicalExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitLogicalExpression(QueriesParser.LogicalExpressionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link QueriesParser#numericExpression}.
 	 * @param ctx the parse tree
 	 */

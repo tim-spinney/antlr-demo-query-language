@@ -1,6 +1,13 @@
 grammar Queries;
 
-query: 'WHERE' numericExpression Comparator numericExpression EOF ;
+query: 'WHERE' logicalExpression EOF ;
+
+logicalExpression:
+    'NOT' logicalExpression
+  | numericExpression Comparator numericExpression
+  | logicalExpression And logicalExpression
+  | logicalExpression Or logicalExpression
+  ;
 
 numericExpression:
     numericExpression (Mult | Div) numericExpression
@@ -13,6 +20,8 @@ Mult: '*' ;
 Div: '/' ;
 Add: '+' ;
 Mod: '%' ;
+And: 'AND' ;
+Or: 'OR' ;
 
 // 1. How do you avoid infinite recursion when starting with numericExpression ?
 // 2. How do you add parenthetical groupings?

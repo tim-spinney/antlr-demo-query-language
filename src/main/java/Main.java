@@ -13,7 +13,7 @@ import java.util.Map;
 public class Main {
     public static void main(String[] args) {
         Main main = new Main(true); //args.length > 0 && args[0].equals("-d"));
-        main.testTableDefinitions();
+        main.testQueryInterpreter();
     }
 
     boolean isInDebugMode;
@@ -23,7 +23,7 @@ public class Main {
     }
 
     private void testQueryInterpreter() {
-        String input = "WHERE it * 2 + 4 * 3 >= 16 + it";
+        String input = "WHERE it * 2 + 4 * 3 >= 16 + it AND it > 0 OR NOT NOT it < 0";
         System.out.println(input);
 
         CharStream inputStream = CharStreams.fromString(input);

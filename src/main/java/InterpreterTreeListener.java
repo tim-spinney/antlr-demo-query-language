@@ -12,28 +12,49 @@ public class InterpreterTreeListener extends QueriesBaseListener {
     public boolean getResult() { return (boolean)evalStack.peek(); }
 
     @Override
-    public void exitQuery(QueriesParser.QueryContext ctx) {
+    public void exitLogicalExpression(QueriesParser.LogicalExpressionContext ctx) {
+        if(ctx.logicalExpression().isEmpty()) {
+            handleNumericComparison(ctx);
+        } else if(ctx.logicalExpression().size() == 1) {
+            boolean oldValue = (boolean)evalStack.pop();
+            evalStack.push(!oldValue);
+        } else if(ctx.logicalExpression().size() == 2) {
+            handleBinaryLogicalExpression(ctx);
+        }
+    }
+
+    private void handleNumericComparison(QueriesParser.LogicalExpressionContext ctx) {
         int rhs = (int) evalStack.pop();
         int lhs = (int) evalStack.pop();
         switch(ctx.Comparator().getSymbol().getText()) {
             case ">":
-                evalStack.push(rhs > lhs);
+                evalStack.push(lhs > rhs);
                 break;
             case ">=":
-                evalStack.push(rhs >= lhs);
+                evalStack.push(lhs >= rhs);
                 break;
             case "<":
-                evalStack.push(rhs < lhs);
+                evalStack.push(lhs < rhs);
                 break;
             case "<=":
-                evalStack.push(rhs <= lhs);
+                evalStack.push(lhs <= rhs);
                 break;
             case "<>":
-                evalStack.push(rhs != lhs);
+                evalStack.push(lhs != rhs);
                 break;
             case "==":
-                evalStack.push(rhs == lhs);
+                evalStack.push(lhs == rhs);
                 break;
+        }
+    }
+
+    private void handleBinaryLogicalExpression(QueriesParser.LogicalExpressionContext ctx) {
+        boolean lhs = (boolean)evalStack.pop();
+        boolean rhs = (boolean)evalStack.pop();
+        if(ctx.And() != null) {
+            evalStack.push(lhs && rhs);
+        } else if(ctx.Or() != null) {
+            evalStack.push(lhs || rhs);
         }
     }
 
@@ -50,7 +71,6 @@ public class InterpreterTreeListener extends QueriesBaseListener {
         } else if(ctx.IntLiteral() != null) {
             evalStack.push(Integer.parseInt(ctx.IntLiteral().getText()));
         }
-        // System.out.println(evalStack);
     }
 
 }
