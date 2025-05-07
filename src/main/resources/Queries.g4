@@ -3,25 +3,27 @@ grammar Queries;
 query: 'WHERE' logicalExpression EOF ;
 
 logicalExpression:
-    'NOT' logicalExpression
-  | numericExpression Comparator numericExpression
-  | logicalExpression And logicalExpression
-  | logicalExpression Or logicalExpression
+    op=Not logicalExpression
+  | numericExpression op=Comparator numericExpression
+  | logicalExpression op=And logicalExpression
+  | logicalExpression op=Or logicalExpression
   ;
 
 numericExpression:
-    numericExpression (Mult | Div) numericExpression
-  | numericExpression Add numericExpression
-  | numericExpression Mod numericExpression
+    numericExpression (op=Mult | op=Div) numericExpression
+  | numericExpression (op=Add | op=Sub) numericExpression
+  | numericExpression op=Mod numericExpression
   | IntLiteral
   | Identifier ;
 
 Mult: '*' ;
 Div: '/' ;
 Add: '+' ;
+Sub: '-' ;
 Mod: '%' ;
 And: 'AND' ;
 Or: 'OR' ;
+Not: 'NOT' ;
 
 // 1. How do you avoid infinite recursion when starting with numericExpression ?
 // 2. How do you add parenthetical groupings?

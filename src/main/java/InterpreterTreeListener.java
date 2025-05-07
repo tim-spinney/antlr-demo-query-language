@@ -62,8 +62,12 @@ public class InterpreterTreeListener extends QueriesBaseListener {
     public void exitNumericExpression(QueriesParser.NumericExpressionContext ctx) {
         if(ctx.Mult() != null) {
             evalStack.push((int)evalStack.pop() * (int)evalStack.pop());
+        } else if(ctx.Div() != null) {
+            evalStack.push((int)evalStack.pop() / (int)evalStack.pop());
         } else if(ctx.Add() != null) {
             evalStack.push((int)evalStack.pop() + (int)evalStack.pop());
+        } else if(ctx.Sub() != null) {
+            evalStack.push((int)evalStack.pop() - (int)evalStack.pop());
         } else if(ctx.Mod() != null) {
             evalStack.push((int)evalStack.pop() % (int)evalStack.pop());
         } else if(ctx.Identifier() != null) {
