@@ -27,7 +27,7 @@ class InstructionGeneratingTreeListener : QueriesBaseListener() {
 
     override fun exitNumericExpression(ctx: QueriesParser.NumericExpressionContext) {
         if(ctx.Identifier() != null) {
-            _instructions += Instruction(Operation.LOAD)
+            _instructions += MemoryAccessInstruction(Operation.LOAD, ctx.Identifier().text)
         } else if(ctx.IntLiteral() != null) {
             _instructions += LiteralInstruction(Operation.PUSH, ctx.IntLiteral().text.toInt())
         } else if(ctx.op != null) {

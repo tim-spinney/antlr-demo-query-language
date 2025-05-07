@@ -39,9 +39,11 @@ public class Main {
         }
 
         int[] inputData = new int[]{1, 1, 2, 3, 5, 8, 13};
-        for(int i : inputData) {
-            InterpreterTreeListener interpreter = new InterpreterTreeListener(i);
+        boolean[] matches = new boolean[inputData.length];
+        for(int i = 0; i < inputData.length; i++) {
+            InterpreterTreeListener interpreter = new InterpreterTreeListener(inputData[i]);
             walker.walk(interpreter, queryContext);
+            matches[i] = interpreter.getResult();
             System.out.println(i + ": " + (interpreter.getResult() ? "YES" : "NO"));
         }
     }

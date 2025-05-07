@@ -14,5 +14,6 @@ public enum Operation {
     EQ,
     NE,
     PUSH,
-    LOAD
+    LOAD,
+    STORE,
 }
