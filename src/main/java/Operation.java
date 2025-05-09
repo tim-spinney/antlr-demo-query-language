@@ -16,4 +16,7 @@ public enum Operation {
     PUSH,
     LOAD,
     STORE,
+    JUMP,
+    JUMP_IF_FALSE,
+    RET
 }
