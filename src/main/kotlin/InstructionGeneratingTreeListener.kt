@@ -1,14 +1,17 @@
 import QueriesParser.LogicalExpressionContext
+import QueriesParser.NumericExpressionContext
 
 class InstructionGeneratingTreeListener : QueriesBaseListener() {
     private val _instructions = mutableListOf<Instruction>()
     private val _labelIndices = mutableListOf<Int>()
 
     val instructions get() = _instructions.toList()
+    /** Each element's index is the id of a particular label (think of these as auto-incrementing).
+        Each element's value is the index of the instruction that immediately follows the label.
+     */
     val labels get() = _labelIndices.toList()
 
-    private var fallthroughDestination: Int = -1
-    private var exitDestination: Int = -1
+    private val shortCircuitJumps = mutableListOf<ShortCircuitJumps>()
 
     private fun reserveLabel(): Int {
         _labelIndices.add(-1)
@@ -34,40 +37,76 @@ class InstructionGeneratingTreeListener : QueriesBaseListener() {
 
     override fun enterLogicalExpression(ctx: LogicalExpressionContext) {
         when(ctx.op.type) {
-            QueriesParser.And -> {
-                fallthroughDestination = reserveLabel()
-                exitDestination = reserveLabel()
-            }
-            QueriesParser.Or -> {
-                fallthroughDestination = reserveLabel()
-                exitDestination = reserveLabel()
+            QueriesParser.And, QueriesParser.Or -> {
+                val isPositive = ctx.op.type == QueriesParser.Or
+                if(shortCircuitJumps.isEmpty()) {
+                    shortCircuitJumps += ShortCircuitJumps(
+                        reserveLabel(),
+                        reserveLabel(),
+                        isPositive
+                    )
+                } else {
+                    val fallThroughParentToo = shortCircuitJumps.last().isPositive == isPositive
+                    if(fallThroughParentToo) { // then our fallthrough destination is our parent's and our continuation should continue into our parent's RHS
+                        shortCircuitJumps += ShortCircuitJumps(
+                            shortCircuitJumps.last().fallthroughDestination,
+                            reserveLabel(),
+                            isPositive
+                        )
+                    } else { // our fallthrough continues to the parent's RHS and our continuation falls through our parent
+                        shortCircuitJumps += ShortCircuitJumps(
+
+                            reserveLabel(),
+                            shortCircuitJumps.last().fallthroughDestination,
+                            isPositive
+                        )
+                    }
+                }
+
             }
         }
     }
 
-    override fun exitLogicalExpression(ctx: QueriesParser.LogicalExpressionContext) {
+    override fun exitLogicalExpression(ctx: LogicalExpressionContext) {
         when(ctx.op.type) {
-            QueriesParser.And -> {
-                _instructions += LiteralInstruction(Operation.PUSH, true)
-                _instructions += JumpInstruction(Operation.JUMP, exitDestination)
-                placeReservedLabel(fallthroughDestination)
-                _instructions += LiteralInstruction(Operation.PUSH, false)
-                placeReservedLabel(exitDestination)
-            }
-            QueriesParser.Or -> {
-                _instructions += LiteralInstruction(Operation.PUSH, false)
-                _instructions += JumpInstruction(Operation.JUMP, exitDestination)
-                placeReservedLabel(fallthroughDestination)
-                _instructions += LiteralInstruction(Operation.PUSH, true)
-                placeReservedLabel(exitDestination)
+            QueriesParser.And, QueriesParser.Or -> {
+                val endingShortCircuit = shortCircuitJumps.removeLast()
+                if(shortCircuitJumps.isEmpty()) {
+                    _instructions += LiteralInstruction(Operation.PUSH, !endingShortCircuit.isPositive)
+                    _instructions += JumpInstruction(Operation.JUMP, endingShortCircuit.exitDestination)
+                    placeReservedLabel(endingShortCircuit.fallthroughDestination)
+                    _instructions += LiteralInstruction(Operation.PUSH, endingShortCircuit.isPositive)
+                } else { // there's a parent expression and we need to act as its LHS
+                    // first, we place the instruction that says what to do if we just kept going rather than jumping
+                    // if the expression we're completing jumps on true and we got here by not jumping, then it must have evaluated to false
+                    // conversely, jumping on false means we got here because it evaluated to true
+                    val continuingResultedInTrue = !endingShortCircuit.isPositive
+                    // now check if our parent short-circuits on true or false
+                    val fallThroughParentOnTrue = shortCircuitJumps.last().isPositive
+                    val continuationDestination = if(continuingResultedInTrue == fallThroughParentOnTrue) { // and jump to its fallthrough if we meet the condition
+                        shortCircuitJumps.last().fallthroughDestination
+                    } else { // we didn't meet fallthrough criteria and need to continue to the RHS
+                        endingShortCircuit.exitDestination
+                    }
+                    _instructions += JumpInstruction(
+                        Operation.JUMP,
+                        continuationDestination
+                    )
+                    placeReservedLabel(endingShortCircuit.fallthroughDestination)
+                    // now we handle what happens if we short-circuited
+                    if(endingShortCircuit.isPositive == fallThroughParentOnTrue) { // if conditions match, short-circuit the parent too
+                        shortCircuitJumps.last().fallthroughDestination
+                    } // otherwise just keep going
+                }
+                placeReservedLabel(endingShortCircuit.exitDestination)
             }
             QueriesParser.Not -> {
                 _instructions += Instruction(Operation.NOT)
             }
             QueriesParser.Comparator -> {
                 _instructions += handleNumericComparison(ctx)
-                // TODO: JUMP_IF_TRUE for OR, FALSE is for AND only
-                _instructions += JumpInstruction(Operation.JUMP_IF_FALSE, fallthroughDestination)
+                val op = if(shortCircuitJumps.last().isPositive) Operation.JUMP_IF_TRUE else Operation.JUMP_IF_FALSE
+                _instructions += JumpInstruction(op, shortCircuitJumps.last().fallthroughDestination)
             }
             else -> throw IllegalArgumentException("Unexpected operator: ${ctx.op.text}")
         }
@@ -78,12 +117,12 @@ class InstructionGeneratingTreeListener : QueriesBaseListener() {
         "<=" -> Instruction(Operation.LTE)
         ">" -> Instruction(Operation.GT)
         ">=" -> Instruction(Operation.GTE)
-        "=" -> Instruction(Operation.EQ)
+        "==" -> Instruction(Operation.EQ)
         "<>" -> Instruction(Operation.NE)
         else -> throw IllegalArgumentException("Unexpected comparator: ${ctx.Comparator().text}")
     }
 
-    override fun exitNumericExpression(ctx: QueriesParser.NumericExpressionContext) {
+    override fun exitNumericExpression(ctx: NumericExpressionContext) {
         if(ctx.Identifier() != null) {
             _instructions += MemoryAccessInstruction(Operation.LOAD, ctx.Identifier().text)
         } else if(ctx.IntLiteral() != null) {
