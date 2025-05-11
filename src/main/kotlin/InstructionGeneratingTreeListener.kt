@@ -11,6 +11,9 @@ class InstructionGeneratingTreeListener : QueriesBaseListener() {
      */
     val labels get() = _labelIndices.toList()
 
+    private var _startLoopLabel: Int = -1
+    private var _endLoopLabel: Int = -1
+
     private val shortCircuitJumps = mutableListOf<ShortCircuitJumps>()
 
     private fun reserveLabel(): Int {
@@ -28,10 +31,57 @@ class InstructionGeneratingTreeListener : QueriesBaseListener() {
     }
 
     override fun enterQuery(ctx: QueriesParser.QueryContext) {
-        placeLabel()
+        // int length = data.length
+        _instructions += MemoryAccessInstruction(Operation.LOAD, "data")
+        _instructions += Instruction(Operation.ARRAY_LENGTH)
+        _instructions += MemoryAccessInstruction(Operation.STORE, "length")
+
+        // bool[] matches = new bool[length]
+        _instructions += MemoryAccessInstruction(Operation.LOAD, "length")
+        _instructions += Instruction(Operation.ARRAY_NEW)
+        _instructions += MemoryAccessInstruction(Operation.STORE, "matches")
+
+        // int index = 0;
+        _instructions += LiteralInstruction(Operation.PUSH, 0)
+        _instructions += MemoryAccessInstruction(Operation.STORE, "index")
+
+        _startLoopLabel = placeLabel()
+        _endLoopLabel = reserveLabel()
+
+        // index < length;
+        _instructions += MemoryAccessInstruction(Operation.LOAD, "index")
+        _instructions += MemoryAccessInstruction(Operation.LOAD, "length")
+        _instructions += Instruction(Operation.LT)
+        _instructions += JumpInstruction(Operation.JUMP_IF_FALSE, _endLoopLabel)
+
+        // it = data[index]
+        _instructions += MemoryAccessInstruction(Operation.LOAD, "data")
+        _instructions += MemoryAccessInstruction(Operation.LOAD, "index")
+        _instructions += Instruction(Operation.ARRAY_GET)
+        _instructions += MemoryAccessInstruction(Operation.STORE, "it")
     }
 
     override fun exitQuery(ctx: QueriesParser.QueryContext) {
+        // save query result as local variable
+        _instructions += MemoryAccessInstruction(Operation.STORE, "result")
+        _instructions += MemoryAccessInstruction(Operation.LOAD, "matches")
+        _instructions += MemoryAccessInstruction(Operation.LOAD, "index")
+        // matches[index] = result
+        _instructions += MemoryAccessInstruction(Operation.LOAD, "result")
+        _instructions += Instruction(Operation.ARRAY_SET)
+
+        // index++
+        _instructions += LiteralInstruction(Operation.PUSH, 1)
+        _instructions += MemoryAccessInstruction(Operation.LOAD, "index")
+        _instructions += Instruction(Operation.ADD)
+        _instructions += MemoryAccessInstruction(Operation.STORE, "index")
+
+        // }
+        _instructions += JumpInstruction(Operation.JUMP, _startLoopLabel)
+        placeReservedLabel(_endLoopLabel)
+
+        // return matches
+        _instructions += MemoryAccessInstruction(Operation.LOAD, "matches")
         _instructions += Instruction(Operation.RET)
     }
 

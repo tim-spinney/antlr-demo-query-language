@@ -19,5 +19,9 @@ public enum Operation {
     JUMP,
     JUMP_IF_TRUE,
     JUMP_IF_FALSE,
-    RET
+    RET,
+    ARRAY_NEW,
+    ARRAY_GET,
+    ARRAY_SET,
+    ARRAY_LENGTH
 }
