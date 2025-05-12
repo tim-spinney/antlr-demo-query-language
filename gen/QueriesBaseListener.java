@@ -47,6 +47,18 @@ public class QueriesBaseListener implements QueriesListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitNumericExpression(QueriesParser.NumericExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterVariableAccess(QueriesParser.VariableAccessContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitVariableAccess(QueriesParser.VariableAccessContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

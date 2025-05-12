@@ -14,7 +14,9 @@ numericExpression:
   | numericExpression (op=Add | op=Sub) numericExpression
   | numericExpression op=Mod numericExpression
   | IntLiteral
-  | Identifier ;
+  | variableAccess ;
+
+variableAccess: Identifier ('.' variableAccess)? ;
 
 Mult: '*' ;
 Div: '/' ;
@@ -36,7 +38,7 @@ Whitespace: [ \t\r\n]+ -> skip ;
 
 IntLiteral: [-]?[0-9]+ ;
 
-Identifier: 'it' ;
+Identifier: [a-z][a-z_]* ;
 
 /* WHERE clause use cases:
 - filter out odd or even

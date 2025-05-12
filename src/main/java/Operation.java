@@ -23,5 +23,6 @@ public enum Operation {
     ARRAY_NEW,
     ARRAY_GET,
     ARRAY_SET,
-    ARRAY_LENGTH
+    ARRAY_LENGTH,
+    FIELD_GET
 }

@@ -1,5 +1,4 @@
-import QueriesParser.LogicalExpressionContext
-import QueriesParser.NumericExpressionContext
+import QueriesParser.*
 
 class InstructionGeneratingTreeListener : QueriesBaseListener() {
     private val _instructions = mutableListOf<Instruction>()
@@ -173,17 +172,23 @@ class InstructionGeneratingTreeListener : QueriesBaseListener() {
     }
 
     override fun exitNumericExpression(ctx: NumericExpressionContext) {
-        if(ctx.Identifier() != null) {
-            _instructions += MemoryAccessInstruction(Operation.LOAD, ctx.Identifier().text)
+        if(ctx.variableAccess()?.Identifier() != null) {
+            _instructions += MemoryAccessInstruction(Operation.LOAD, ctx.variableAccess().Identifier().text)
+            var variableAccess = ctx.variableAccess().variableAccess()
+            while(variableAccess != null) {
+                val fieldName = variableAccess.Identifier().text
+                _instructions += MemoryAccessInstruction(Operation.FIELD_GET, fieldName)
+                variableAccess = variableAccess.variableAccess()
+            }
         } else if(ctx.IntLiteral() != null) {
             _instructions += LiteralInstruction(Operation.PUSH, ctx.IntLiteral().text.toInt())
         } else if(ctx.op != null) {
             _instructions += when (ctx.op.type) {
-                QueriesParser.Mult -> Instruction(Operation.MUL)
-                QueriesParser.Div -> Instruction(Operation.DIV)
-                QueriesParser.Add -> Instruction(Operation.ADD)
-                QueriesParser.Sub -> Instruction(Operation.SUB)
-                QueriesParser.Mod -> Instruction(Operation.MOD)
+                Mult -> Instruction(Operation.MUL)
+                Div -> Instruction(Operation.DIV)
+                Add -> Instruction(Operation.ADD)
+                Sub -> Instruction(Operation.SUB)
+                Mod -> Instruction(Operation.MOD)
                 else -> throw IllegalArgumentException("Unexpected operator: ${ctx.op.text}")
             }
         } else {

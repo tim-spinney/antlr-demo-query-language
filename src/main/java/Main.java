@@ -23,7 +23,7 @@ public class Main {
     }
 
     private void testQueryInterpreter() {
-        String input = "WHERE it * 2 + 4 * 3 >= 16 + it AND it > 0 OR NOT NOT it < 0";
+        String input = "WHERE it.a * 2 + 4 * 3 >= 16 + it.a AND it.a > 0 OR NOT NOT it.a < 0";
         System.out.println(input);
 
         CharStream inputStream = CharStreams.fromString(input);
@@ -38,10 +38,15 @@ public class Main {
             walker.walk(new DebugTreeListener(parser), queryContext);
         }
 
-        int[] inputData = new int[]{1, 1, 2, 3, 5, 8, 13};
-        boolean[] matches = new boolean[inputData.length];
-        for(int i = 0; i < inputData.length; i++) {
-            InterpreterTreeListener interpreter = new InterpreterTreeListener(inputData[i]);
+        List<Map<String, Object>> inputData = new ArrayList<>();
+        inputData.add(Map.of("a", 1));
+        inputData.add(Map.of("a", 2));
+        inputData.add(Map.of("a", 4));
+        inputData.add(Map.of("a", 8));
+        inputData.add(Map.of("a", 16));
+        boolean[] matches = new boolean[inputData.size()];
+        for(int i = 0; i < inputData.size(); i++) {
+            InterpreterTreeListener interpreter = new InterpreterTreeListener(inputData.get(i));
             walker.walk(interpreter, queryContext);
             matches[i] = interpreter.getResult();
             System.out.println(i + ": " + (interpreter.getResult() ? "YES" : "NO"));

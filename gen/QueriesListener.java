@@ -36,4 +36,14 @@ public interface QueriesListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitNumericExpression(QueriesParser.NumericExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link QueriesParser#variableAccess}.
+	 * @param ctx the parse tree
+	 */
+	void enterVariableAccess(QueriesParser.VariableAccessContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link QueriesParser#variableAccess}.
+	 * @param ctx the parse tree
+	 */
+	void exitVariableAccess(QueriesParser.VariableAccessContext ctx);
 }

@@ -1,11 +1,13 @@
+import java.lang.reflect.Field;
+import java.util.Map;
 import java.util.Stack;
 
 public class InterpreterTreeListener extends QueriesBaseListener {
     private final Stack<Object> evalStack = new Stack<>();
 
-    private final int it;
+    private final Object it;
 
-    public InterpreterTreeListener(int it) {
+    public InterpreterTreeListener(Object it) {
         this.it = it;
     }
 
@@ -70,11 +72,33 @@ public class InterpreterTreeListener extends QueriesBaseListener {
             evalStack.push((int)evalStack.pop() - (int)evalStack.pop());
         } else if(ctx.Mod() != null) {
             evalStack.push((int)evalStack.pop() % (int)evalStack.pop());
-        } else if(ctx.Identifier() != null) {
+        } else if(ctx.variableAccess() != null) {
+            QueriesParser.VariableAccessContext variableAccessor = ctx.variableAccess();
             evalStack.push(it);
+            variableAccessor = variableAccessor.variableAccess();
+            while(variableAccessor != null) {
+                processVariableAccessor(variableAccessor);
+                variableAccessor = variableAccessor.variableAccess();
+            }
         } else if(ctx.IntLiteral() != null) {
             evalStack.push(Integer.parseInt(ctx.IntLiteral().getText()));
         }
     }
 
+    private void processVariableAccessor(QueriesParser.VariableAccessContext variableAccessor) {
+        Object variable = evalStack.pop();
+        String fieldName = variableAccessor.Identifier().getText();
+        if(variable instanceof Map) {
+            Object value = ((Map<?, ?>)variable).get(fieldName);
+            evalStack.push(value);
+        } else {
+            try {
+                Field field = variable.getClass().getDeclaredField(fieldName);
+                Object value = field.get(variable);
+                evalStack.push(value);
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }

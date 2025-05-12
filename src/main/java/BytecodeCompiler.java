@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class BytecodeCompiler {
     public static void main(String[] args) {
-        String input = "WHERE it * 2 + 4 * 3 >= 16 + it AND it > 0 AND it < 10 AND it % 2 == 0";
+        String input = "WHERE it.a * 2 + 4 * 3 >= 16 + it.b AND it.c.d > 0 AND it.a < 10 AND it.b % 2 == 0";
         System.out.println(input);
 
         CharStream inputStream = CharStreams.fromString(input);
