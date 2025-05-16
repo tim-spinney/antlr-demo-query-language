@@ -25,7 +25,7 @@ class TypeRedeclaration(val typeDef: TypeDefsParser.TypeDefContext) : TypeIssue(
 }
 
 class FieldRedeclaration(val owningTypeName: String, val field: TypeDefsParser.FieldDefContext) : TypeIssue() {
-    override val message = "Redeclaration of field $owningTypeName::${field.FieldName().text} at ${field.start.line}:${field.start.charPositionInLine}"
+    override val message = "Redeclaration of field $owningTypeName::${field.VarName().text} at ${field.start.line}:${field.start.charPositionInLine}"
 }
 
 private class PlaceholderType(name: String) : Type(name)
@@ -58,13 +58,12 @@ private class TypeCollectingTreeListener(private val existingTypes: Map<String, 
         if(currentTypeDefinition == null) {
             return
         }
-        val fieldName = ctx.FieldName().text
+        val fieldName = ctx.VarName().text
         val typeReferenceNode = ctx.typeReference()
         val typeName = typeReferenceNode.TypeName().text
         val typeReference = TypeReference(
             getTypeOrPlaceholder(typeName),
             isNullable = typeReferenceNode.NullableModifier() != null,
-            isReference = typeReferenceNode.ReferenceModifier() != null
         )
         if(currentTypeDefinition!!.fields.containsKey(fieldName)) {
             _typeIssues += FieldRedeclaration(currentTypeDefinition!!.name, ctx)

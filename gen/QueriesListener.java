@@ -7,6 +7,26 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface QueriesListener extends ParseTreeListener {
 	/**
+	 * Enter a parse tree produced by {@link QueriesParser#queries}.
+	 * @param ctx the parse tree
+	 */
+	void enterQueries(QueriesParser.QueriesContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link QueriesParser#queries}.
+	 * @param ctx the parse tree
+	 */
+	void exitQueries(QueriesParser.QueriesContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link QueriesParser#namedQuery}.
+	 * @param ctx the parse tree
+	 */
+	void enterNamedQuery(QueriesParser.NamedQueryContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link QueriesParser#namedQuery}.
+	 * @param ctx the parse tree
+	 */
+	void exitNamedQuery(QueriesParser.NamedQueryContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link QueriesParser#query}.
 	 * @param ctx the parse tree
 	 */

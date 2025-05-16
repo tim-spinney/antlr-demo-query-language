@@ -1,6 +1,12 @@
 grammar Queries;
 
-query: 'WHERE' logicalExpression EOF ;
+import Common;
+
+queries: namedQuery+ EOF ;
+
+namedQuery: 'QUERY' VarName ':' query ';' ;
+
+query: 'WHERE' logicalExpression;
 
 logicalExpression:
     op=Not logicalExpression
@@ -16,7 +22,7 @@ numericExpression:
   | IntLiteral
   | variableAccess ;
 
-variableAccess: Identifier ('.' variableAccess)? ;
+variableAccess: VarName ('.' variableAccess)? ;
 
 Mult: '*' ;
 Div: '/' ;
@@ -34,11 +40,7 @@ Not: 'NOT' ;
 
 Comparator: '==' | '<>' | '>' | '<' | '>=' | '<=' ;
 
-Whitespace: [ \t\r\n]+ -> skip ;
-
 IntLiteral: [-]?[0-9]+ ;
-
-Identifier: [a-z][a-z_]* ;
 
 /* WHERE clause use cases:
 - filter out odd or even

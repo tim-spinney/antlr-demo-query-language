@@ -16,8 +16,8 @@ public class TypeDefsParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, TypeName=6, FieldName=7, ReferenceModifier=8, 
-		NullableModifier=9, WS=10;
+		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, NullableModifier=6, VarName=7, 
+		TypeName=8, WS=9;
 	public static final int
 		RULE_typeDefs = 0, RULE_typeDef = 1, RULE_fieldDef = 2, RULE_typeReference = 3;
 	private static String[] makeRuleNames() {
@@ -29,14 +29,14 @@ public class TypeDefsParser extends Parser {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'TYPE'", "'{'", "','", "'}'", "':'", null, null, "'&'", "'?'"
+			null, "'TYPE'", "'{'", "','", "'}'", "':'", "'?'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, null, null, null, null, null, "TypeName", "FieldName", "ReferenceModifier", 
-			"NullableModifier", "WS"
+			null, null, null, null, null, null, "NullableModifier", "VarName", "TypeName", 
+			"WS"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -92,6 +92,7 @@ public class TypeDefsParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class TypeDefsContext extends ParserRuleContext {
+		public TerminalNode EOF() { return getToken(TypeDefsParser.EOF, 0); }
 		public List<TypeDefContext> typeDef() {
 			return getRuleContexts(TypeDefContext.class);
 		}
@@ -133,6 +134,8 @@ public class TypeDefsParser extends Parser {
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( _la==T__0 );
+			setState(13);
+			match(EOF);
 			}
 		}
 		catch (RecognitionException re) {
@@ -176,31 +179,31 @@ public class TypeDefsParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(13);
-			match(T__0);
-			setState(14);
-			match(TypeName);
 			setState(15);
-			match(T__1);
+			match(T__0);
 			setState(16);
+			match(TypeName);
+			setState(17);
+			match(T__1);
+			setState(18);
 			fieldDef();
-			setState(21);
+			setState(23);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==T__2) {
 				{
 				{
-				setState(17);
+				setState(19);
 				match(T__2);
-				setState(18);
+				setState(20);
 				fieldDef();
 				}
 				}
-				setState(23);
+				setState(25);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(24);
+			setState(26);
 			match(T__3);
 			}
 		}
@@ -217,7 +220,7 @@ public class TypeDefsParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class FieldDefContext extends ParserRuleContext {
-		public TerminalNode FieldName() { return getToken(TypeDefsParser.FieldName, 0); }
+		public TerminalNode VarName() { return getToken(TypeDefsParser.VarName, 0); }
 		public TypeReferenceContext typeReference() {
 			return getRuleContext(TypeReferenceContext.class,0);
 		}
@@ -241,11 +244,11 @@ public class TypeDefsParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(26);
-			match(FieldName);
-			setState(27);
-			match(T__4);
 			setState(28);
+			match(VarName);
+			setState(29);
+			match(T__4);
+			setState(30);
 			typeReference();
 			}
 		}
@@ -263,7 +266,6 @@ public class TypeDefsParser extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class TypeReferenceContext extends ParserRuleContext {
 		public TerminalNode TypeName() { return getToken(TypeDefsParser.TypeName, 0); }
-		public TerminalNode ReferenceModifier() { return getToken(TypeDefsParser.ReferenceModifier, 0); }
 		public TerminalNode NullableModifier() { return getToken(TypeDefsParser.NullableModifier, 0); }
 		public TypeReferenceContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -286,24 +288,14 @@ public class TypeDefsParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(30);
-			match(TypeName);
 			setState(32);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (_la==ReferenceModifier) {
-				{
-				setState(31);
-				match(ReferenceModifier);
-				}
-			}
-
-			setState(35);
+			match(TypeName);
+			setState(34);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==NullableModifier) {
 				{
-				setState(34);
+				setState(33);
 				match(NullableModifier);
 				}
 			}
@@ -322,31 +314,30 @@ public class TypeDefsParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001\n&\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0004\u0001\t%\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
 		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0001\u0000\u0004\u0000\n\b"+
-		"\u0000\u000b\u0000\f\u0000\u000b\u0001\u0001\u0001\u0001\u0001\u0001\u0001"+
-		"\u0001\u0001\u0001\u0001\u0001\u0005\u0001\u0014\b\u0001\n\u0001\f\u0001"+
-		"\u0017\t\u0001\u0001\u0001\u0001\u0001\u0001\u0002\u0001\u0002\u0001\u0002"+
-		"\u0001\u0002\u0001\u0003\u0001\u0003\u0003\u0003!\b\u0003\u0001\u0003"+
-		"\u0003\u0003$\b\u0003\u0001\u0003\u0000\u0000\u0004\u0000\u0002\u0004"+
-		"\u0006\u0000\u0000%\u0000\t\u0001\u0000\u0000\u0000\u0002\r\u0001\u0000"+
-		"\u0000\u0000\u0004\u001a\u0001\u0000\u0000\u0000\u0006\u001e\u0001\u0000"+
-		"\u0000\u0000\b\n\u0003\u0002\u0001\u0000\t\b\u0001\u0000\u0000\u0000\n"+
-		"\u000b\u0001\u0000\u0000\u0000\u000b\t\u0001\u0000\u0000\u0000\u000b\f"+
-		"\u0001\u0000\u0000\u0000\f\u0001\u0001\u0000\u0000\u0000\r\u000e\u0005"+
-		"\u0001\u0000\u0000\u000e\u000f\u0005\u0006\u0000\u0000\u000f\u0010\u0005"+
-		"\u0002\u0000\u0000\u0010\u0015\u0003\u0004\u0002\u0000\u0011\u0012\u0005"+
-		"\u0003\u0000\u0000\u0012\u0014\u0003\u0004\u0002\u0000\u0013\u0011\u0001"+
-		"\u0000\u0000\u0000\u0014\u0017\u0001\u0000\u0000\u0000\u0015\u0013\u0001"+
-		"\u0000\u0000\u0000\u0015\u0016\u0001\u0000\u0000\u0000\u0016\u0018\u0001"+
-		"\u0000\u0000\u0000\u0017\u0015\u0001\u0000\u0000\u0000\u0018\u0019\u0005"+
-		"\u0004\u0000\u0000\u0019\u0003\u0001\u0000\u0000\u0000\u001a\u001b\u0005"+
-		"\u0007\u0000\u0000\u001b\u001c\u0005\u0005\u0000\u0000\u001c\u001d\u0003"+
-		"\u0006\u0003\u0000\u001d\u0005\u0001\u0000\u0000\u0000\u001e \u0005\u0006"+
-		"\u0000\u0000\u001f!\u0005\b\u0000\u0000 \u001f\u0001\u0000\u0000\u0000"+
-		" !\u0001\u0000\u0000\u0000!#\u0001\u0000\u0000\u0000\"$\u0005\t\u0000"+
-		"\u0000#\"\u0001\u0000\u0000\u0000#$\u0001\u0000\u0000\u0000$\u0007\u0001"+
-		"\u0000\u0000\u0000\u0004\u000b\u0015 #";
+		"\u0000\u000b\u0000\f\u0000\u000b\u0001\u0000\u0001\u0000\u0001\u0001\u0001"+
+		"\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0005\u0001\u0016"+
+		"\b\u0001\n\u0001\f\u0001\u0019\t\u0001\u0001\u0001\u0001\u0001\u0001\u0002"+
+		"\u0001\u0002\u0001\u0002\u0001\u0002\u0001\u0003\u0001\u0003\u0003\u0003"+
+		"#\b\u0003\u0001\u0003\u0000\u0000\u0004\u0000\u0002\u0004\u0006\u0000"+
+		"\u0000#\u0000\t\u0001\u0000\u0000\u0000\u0002\u000f\u0001\u0000\u0000"+
+		"\u0000\u0004\u001c\u0001\u0000\u0000\u0000\u0006 \u0001\u0000\u0000\u0000"+
+		"\b\n\u0003\u0002\u0001\u0000\t\b\u0001\u0000\u0000\u0000\n\u000b\u0001"+
+		"\u0000\u0000\u0000\u000b\t\u0001\u0000\u0000\u0000\u000b\f\u0001\u0000"+
+		"\u0000\u0000\f\r\u0001\u0000\u0000\u0000\r\u000e\u0005\u0000\u0000\u0001"+
+		"\u000e\u0001\u0001\u0000\u0000\u0000\u000f\u0010\u0005\u0001\u0000\u0000"+
+		"\u0010\u0011\u0005\b\u0000\u0000\u0011\u0012\u0005\u0002\u0000\u0000\u0012"+
+		"\u0017\u0003\u0004\u0002\u0000\u0013\u0014\u0005\u0003\u0000\u0000\u0014"+
+		"\u0016\u0003\u0004\u0002\u0000\u0015\u0013\u0001\u0000\u0000\u0000\u0016"+
+		"\u0019\u0001\u0000\u0000\u0000\u0017\u0015\u0001\u0000\u0000\u0000\u0017"+
+		"\u0018\u0001\u0000\u0000\u0000\u0018\u001a\u0001\u0000\u0000\u0000\u0019"+
+		"\u0017\u0001\u0000\u0000\u0000\u001a\u001b\u0005\u0004\u0000\u0000\u001b"+
+		"\u0003\u0001\u0000\u0000\u0000\u001c\u001d\u0005\u0007\u0000\u0000\u001d"+
+		"\u001e\u0005\u0005\u0000\u0000\u001e\u001f\u0003\u0006\u0003\u0000\u001f"+
+		"\u0005\u0001\u0000\u0000\u0000 \"\u0005\b\u0000\u0000!#\u0005\u0006\u0000"+
+		"\u0000\"!\u0001\u0000\u0000\u0000\"#\u0001\u0000\u0000\u0000#\u0007\u0001"+
+		"\u0000\u0000\u0000\u0003\u000b\u0017\"";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

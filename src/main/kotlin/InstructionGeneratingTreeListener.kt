@@ -1,8 +1,10 @@
 import QueriesParser.*
+import java.lang.classfile.ClassFile
 
 class InstructionGeneratingTreeListener : QueriesBaseListener() {
     private val _instructions = mutableListOf<Instruction>()
     private val _labelIndices = mutableListOf<Int>()
+    private val _classFile = ClassFile.of()
 
     val instructions get() = _instructions.toList()
     /** Each element's index is the id of a particular label (think of these as auto-incrementing).
@@ -172,11 +174,11 @@ class InstructionGeneratingTreeListener : QueriesBaseListener() {
     }
 
     override fun exitNumericExpression(ctx: NumericExpressionContext) {
-        if(ctx.variableAccess()?.Identifier() != null) {
-            _instructions += MemoryAccessInstruction(Operation.LOAD, ctx.variableAccess().Identifier().text)
+        if(ctx.variableAccess()?.VarName() != null) {
+            _instructions += MemoryAccessInstruction(Operation.LOAD, ctx.variableAccess().VarName().text)
             var variableAccess = ctx.variableAccess().variableAccess()
             while(variableAccess != null) {
-                val fieldName = variableAccess.Identifier().text
+                val fieldName = variableAccess.VarName().text
                 _instructions += MemoryAccessInstruction(Operation.FIELD_GET, fieldName)
                 variableAccess = variableAccess.variableAccess()
             }

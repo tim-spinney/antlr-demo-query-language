@@ -1,0 +1,7 @@
+QUERY nonNegative:
+WHERE it.topLeft.x >= 0 AND it.topLeft.y >= 0
+;
+
+QUERY nonEmpty:
+WHERE it.width > 0 AND it.height > 0
+;

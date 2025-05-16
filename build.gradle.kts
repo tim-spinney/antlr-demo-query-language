@@ -1,6 +1,8 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id("java")
-    kotlin("jvm") version "2.1.20"
+    kotlin("jvm") version "2.2.0-RC"
 }
 
 group = "edu.seattleu"
@@ -20,6 +22,12 @@ tasks.test {
     useJUnitPlatform()
 }
 
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_24)
+    }
+}
+
 sourceSets {
     main {
         java.srcDir("gen")
@@ -36,4 +44,10 @@ tasks.register<JavaExec>("genTypeDefsParser") {
     mainClass.set("org.antlr.v4.Tool")
     classpath = sourceSets["main"].runtimeClasspath
     setArgsString("-o gen/ src/main/resources/TypeDefs.g4")
+}
+
+tasks.register<JavaExec>("genProcessorParser") {
+    mainClass.set("org.antlr.v4.Tool")
+    classpath = sourceSets["main"].runtimeClasspath
+    setArgsString("-o gen/ src/main/resources/Processor.g4")
 }

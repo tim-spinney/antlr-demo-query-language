@@ -7,8 +7,8 @@ class UserDefinedType(name: String) : Type(name) {
 
 data object IntType : Type("Int")
 
-val builtInTypes = listOf(IntType).associateBy { it.name }
+val builtInTypes: Map<String, Type> = listOf(IntType).associateBy { it.name }
 
-data class TypeReference(val type: Type, val isNullable: Boolean, val isReference: Boolean) {
-    override fun toString() = "${type.name}${if(isReference) "&" else ""}${if(isNullable) "?" else ""}"
+data class TypeReference(val type: Type, val isNullable: Boolean) {
+    override fun toString() = "${type.name}${if(isNullable) "?" else ""}"
 }

@@ -1,0 +1,26 @@
+[
+  {
+    "topLeft": {
+      "x": 1,
+      "y": 1
+    },
+    "width": 4,
+    "height": 10
+  },
+  {
+    "topLeft": {
+      "x": -1,
+      "y": 100
+    },
+    "width": 1,
+    "height": 10
+  },
+  {
+    "topLeft": {
+      "x": 40,
+      "y": 50
+    },
+    "width": 0,
+    "height": 1
+  }
+]

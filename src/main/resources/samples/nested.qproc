@@ -1,0 +1,8 @@
+INCLUDE QUERIES "nested.queries";
+INCLUDE TYPES "nested.qtypes";
+
+LOAD "src/main/resources/samples/nested.json" INTO input AS Rectangle;
+RUN nonNegative ON input INTO nonNegativeData;
+RUN nonEmpty ON nonNegativeData INTO finalData;
+SAVE nonNegativeData TO "nonNegative.json";
+SAVE finalData TO "final.json";

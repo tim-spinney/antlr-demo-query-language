@@ -1,19 +1,13 @@
 grammar TypeDefs;
 
+import Common;
+
 typeDefs: typeDef+ EOF;
 
 typeDef: 'TYPE' TypeName '{' fieldDef (',' fieldDef)* '}' ;
 
-fieldDef: FieldName ':' typeReference ;
+fieldDef: VarName ':' typeReference ;
 
-typeReference: TypeName ReferenceModifier? NullableModifier? ;
-
-TypeName: [A-Z][a-zA-Z]* ;
-
-FieldName: [a-z][a-zA-Z]* ;
-
-ReferenceModifier: '&' ;
+typeReference: TypeName NullableModifier? ;
 
 NullableModifier: '?' ;
-
-WS: [ \t\r\n]+ -> skip;

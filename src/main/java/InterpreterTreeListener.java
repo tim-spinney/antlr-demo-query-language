@@ -87,7 +87,7 @@ public class InterpreterTreeListener extends QueriesBaseListener {
 
     private void processVariableAccessor(QueriesParser.VariableAccessContext variableAccessor) {
         Object variable = evalStack.pop();
-        String fieldName = variableAccessor.Identifier().getText();
+        String fieldName = variableAccessor.VarName().getText();
         if(variable instanceof Map) {
             Object value = ((Map<?, ?>)variable).get(fieldName);
             evalStack.push(value);
