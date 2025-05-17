@@ -2,7 +2,7 @@ import java.util.*;
 
 public class ProcessorSymbolTable {
     private final Map<String, Type> typesByName = new HashMap<>();
-    private final Set<String> queryNames = new HashSet<>();
+    private final Map<String, QueriesParser.QueryContext> queryNames = new HashMap<>();
 
     public Map<String, Type> getTypes() {
         return Collections.unmodifiableMap(typesByName);
@@ -17,7 +17,7 @@ public class ProcessorSymbolTable {
      * @param name
      * @return true if this was a new name, false if it was a duplicate of an existing query
      */
-    public boolean addQuery(String name) {
-        return queryNames.add(name);
+    public boolean addQuery(String name, QueriesParser.QueryContext queryContext) {
+        return queryNames.putIfAbsent(name, queryContext) == null;
     }
 }

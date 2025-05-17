@@ -11,7 +11,7 @@ executableStatement: (loadStatement | runQueryStatement | saveStatement) ';';
 
 loadStatement: 'LOAD' StringLiteral 'INTO' VarName 'AS' TypeName ;
 
-runQueryStatement: 'RUN' VarName 'ON' VarName 'INTO' VarName ;
+runQueryStatement: 'RUN' queryName=VarName 'ON' sourceName=VarName 'INTO' destinationName=VarName ;
 
 saveStatement: 'SAVE' VarName 'TO' StringLiteral ;
 

@@ -351,6 +351,9 @@ public class ProcessorParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class RunQueryStatementContext extends ParserRuleContext {
+		public Token queryName;
+		public Token sourceName;
+		public Token destinationName;
 		public List<TerminalNode> VarName() { return getTokens(ProcessorParser.VarName); }
 		public TerminalNode VarName(int i) {
 			return getToken(ProcessorParser.VarName, i);
@@ -378,15 +381,15 @@ public class ProcessorParser extends Parser {
 			setState(43);
 			match(T__5);
 			setState(44);
-			match(VarName);
+			((RunQueryStatementContext)_localctx).queryName = match(VarName);
 			setState(45);
 			match(T__6);
 			setState(46);
-			match(VarName);
+			((RunQueryStatementContext)_localctx).sourceName = match(VarName);
 			setState(47);
 			match(T__3);
 			setState(48);
-			match(VarName);
+			((RunQueryStatementContext)_localctx).destinationName = match(VarName);
 			}
 		}
 		catch (RecognitionException re) {

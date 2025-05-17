@@ -4,7 +4,7 @@ import Common;
 
 queries: namedQuery+ EOF ;
 
-namedQuery: 'QUERY' VarName ':' query ';' ;
+namedQuery: 'QUERY' VarName 'ON' TypeName ':' query ';' ;
 
 query: 'WHERE' logicalExpression;
 

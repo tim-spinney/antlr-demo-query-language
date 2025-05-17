@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 /* Java code approxmiating sample code in BytecodeCompiler so we can see
    what the equivalent JVM bytecode would be.
  */
@@ -33,4 +36,5 @@ public class Sample1 {
         public final int a;
         public Row(int a) { this.a = a; }
     }
+
 }

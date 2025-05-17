@@ -14,6 +14,7 @@ repositories {
 
 dependencies {
     implementation("org.antlr:antlr4:4.13.2")
+    implementation(files("out"))
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }
