@@ -6,13 +6,27 @@ import java.lang.constant.ConstantDescs
 import java.lang.constant.MethodTypeDesc
 
 class JVMBytecodeGeneratingTreeListener(private val codeBuilder: CodeBuilder, private val dataType: Type) : QueriesBaseListener() {
+    // Possible refactor: make class that writes for loop setup, gets a block builder, then runs tree traversal inside that block
     private var _startLoopLabel: Label? = null
     private var _endLoopLabel: Label? = null
 
     private class ConditionLabels(val exitDestination: Label, val fallthroughDestination: Label, val isPositive: Boolean)
     private val shortCircuitJumps = mutableListOf<ConditionLabels>()
 
+    companion object {
+        private val resultContainerType = ClassDesc.of("java.util", "ArrayList")
+        private val memPosMatches = 3
+        private val memPosIndex = 4
+        private val memPosIt = 5
+    }
+
     override fun enterQuery(ctx: QueryContext) {
+        // TODO: narrow label ranges to actual use
+        codeBuilder.localVariable(1, "data", ClassDesc.of(dataType.name).arrayType(), codeBuilder.startLabel(), codeBuilder.endLabel())
+        codeBuilder.localVariable(2, "length", ConstantDescs.CD_int, codeBuilder.startLabel(), codeBuilder.endLabel())
+        codeBuilder.localVariable(3, "matches", resultContainerType, codeBuilder.startLabel(), codeBuilder.endLabel())
+        codeBuilder.localVariable(4, "index", ConstantDescs.CD_int, codeBuilder.startLabel(), codeBuilder.endLabel())
+
         // int length = data.length
         codeBuilder
             .aload(1)
@@ -23,20 +37,22 @@ class JVMBytecodeGeneratingTreeListener(private val codeBuilder: CodeBuilder, pr
         codeBuilder
             .new_(ClassDesc.of("java.util", "ArrayList"))
             .dup()
-            .invokespecial(ClassDesc.of("java.util", "ArrayList"), "<init>", MethodTypeDesc.of(ConstantDescs.CD_Void))
-            .astore(3)
+            .invokespecial(resultContainerType, "<init>", MethodTypeDesc.of(ConstantDescs.CD_Void))
+            .astore(memPosMatches)
 
         // int index = 0
         codeBuilder
             .iconst_0()
-            .istore(4)
+            .istore(memPosIndex)
 
         _startLoopLabel = codeBuilder.newBoundLabel()
         _endLoopLabel = codeBuilder.newLabel()
 
+        codeBuilder.localVariable(5, "it", ClassDesc.of(dataType.name), _startLoopLabel, _endLoopLabel)
+
         // index < length
         codeBuilder
-            .iload(4)
+            .iload(memPosIndex)
             .iload(2)
             .if_icmpge(_endLoopLabel)
 
@@ -44,9 +60,9 @@ class JVMBytecodeGeneratingTreeListener(private val codeBuilder: CodeBuilder, pr
         // it = data[index]
         codeBuilder
             .aload(1)
-            .iload(4)
+            .iload(memPosIndex)
             .aaload()
-            .astore(5)
+            .astore(memPosIt)
     }
 
     override fun exitQuery(ctx: QueryContext) {
@@ -57,9 +73,9 @@ class JVMBytecodeGeneratingTreeListener(private val codeBuilder: CodeBuilder, pr
 
         // matches.add(result)
         codeBuilder
-            .aload(3)
-            .aload(5)
-            .invokevirtual(ClassDesc.of("java.util", "ArrayList"), "add", MethodTypeDesc.of(ConstantDescs.CD_Boolean, ConstantDescs.CD_Object))
+            .aload(memPosMatches)
+            .aload(memPosIt)
+            .invokevirtual(resultContainerType, "add", MethodTypeDesc.of(ConstantDescs.CD_Boolean, ConstantDescs.CD_Object))
             .pop()
 
         // matches[index] = null
@@ -67,7 +83,7 @@ class JVMBytecodeGeneratingTreeListener(private val codeBuilder: CodeBuilder, pr
             .labelBinding(noMatchLabel)
 
         // index++
-        codeBuilder.iinc(4, 1)
+        codeBuilder.iinc(memPosIndex, 1)
 
         // }
         codeBuilder.goto_(_startLoopLabel)
@@ -75,8 +91,8 @@ class JVMBytecodeGeneratingTreeListener(private val codeBuilder: CodeBuilder, pr
 
         // return matches
         codeBuilder
-            .aload(3)
-            .invokevirtual(ClassDesc.of("java.util", "ArrayList"), "toArray", MethodTypeDesc.of(ConstantDescs.CD_Object.arrayType()))
+            .aload(memPosMatches)
+            .invokevirtual(resultContainerType, "toArray", MethodTypeDesc.of(ConstantDescs.CD_Object.arrayType()))
             .areturn()
     }
 
@@ -200,6 +216,55 @@ class JVMBytecodeGeneratingTreeListener(private val codeBuilder: CodeBuilder, pr
         else -> throw IllegalArgumentException("Unexpected comparator: ${ctx.Comparator().text}")
     }
 
+    override fun exitNumericExpression(ctx: NumericExpressionContext) {
+        if(ctx.variableAccess()?.VarName() != null) {
+            /* Note: This assumes that the only named variable in this scope is "it", the current data item.
+                   We'll need a local mapping of variable name to memory index for query-local variables
+                   and either member variables or a param representing context for surrounding-scope variables.
+                 */
+            when(dataType) {
+                is IntType -> codeBuilder.iload(memPosIt)
+                is UserDefinedType -> codeBuilder.aload(memPosIt)
+                else -> throw IllegalArgumentException("Unexpected data type: $dataType")
+            }
+            if(ctx.variableAccess().variableAccess() != null) {
+                handleVariableAccess(ctx.variableAccess().variableAccess(), dataType)
+            }
+        } else if(ctx.IntLiteral() != null) {
+            codeBuilder.ldc(codeBuilder.constantPool().intEntry(ctx.IntLiteral().text.toInt()))
+        } else if(ctx.op != null) {
+            handleMathOp(ctx)
+        } else {
+            throw IllegalArgumentException("Unexpected expression: $ctx")
+        }
+    }
+
+    private fun handleVariableAccess(variableAccess: VariableAccessContext, currentType: Type) {
+        val currentJavaType = ClassDesc.of(currentType.name)
+        val fieldName = variableAccess.VarName().text
+        val fieldType = (currentType as UserDefinedType).fields[fieldName]?.type ?: throw IllegalArgumentException("Field $fieldName not defined on $currentType")
+        val fieldJavaType = when(fieldType) {
+            is IntType -> ConstantDescs.CD_int
+            is UserDefinedType -> ClassDesc.of(fieldType.name)
+            else -> throw IllegalArgumentException("Unexpected field type: $fieldType")
+        }
+        codeBuilder.getfield(currentJavaType, variableAccess.VarName().text, fieldJavaType)
+        variableAccess.variableAccess()?.let {
+            handleVariableAccess(it, fieldType)
+        }
+    }
+
+    private fun handleMathOp(ctx: NumericExpressionContext) {
+        when(ctx.op.type) {
+            Mult -> codeBuilder.imul()
+            Div -> codeBuilder.idiv()
+            Add -> codeBuilder.iadd()
+            Sub -> codeBuilder.isub()
+            Mod -> codeBuilder.irem()
+            else -> throw IllegalArgumentException("Unexpected operator: ${ctx.op.text}")
+        }
+    }
+
     enum class ComparisonOperation() {
         LT, LTE, GT, GTE, EQ, NE
         ;
@@ -218,50 +283,6 @@ class JVMBytecodeGeneratingTreeListener(private val codeBuilder: CodeBuilder, pr
             GTE -> codeBuilder.if_icmpge(label)
             EQ -> codeBuilder.if_icmpeq(label)
             NE -> codeBuilder.if_icmpne(label)
-        }
-    }
-
-    override fun exitNumericExpression(ctx: NumericExpressionContext) {
-        if(ctx.variableAccess()?.VarName() != null) {
-            /* Note: This assumes that the only named variable in this scope is "it", the current data item.
-               We'll need a local mapping of variable name to memory index for query-local variables
-               and either member variables or a param representing context for surrounding-scope variables.
-             */
-            when(dataType) {
-                is IntType -> codeBuilder.iload(5)
-                is UserDefinedType -> codeBuilder.aload(5)
-                else -> throw IllegalArgumentException("Unexpected data type: $dataType")
-            }
-            codeBuilder.aload(5)
-            var variableAccess = ctx.variableAccess().variableAccess()
-            var currentType = dataType
-            var currentJavaType = ClassDesc.of(currentType.name)
-            while(variableAccess != null) {
-                val fieldName = variableAccess.VarName().text
-                val fieldType = (currentType as UserDefinedType).fields[fieldName]?.type ?: throw IllegalArgumentException("Field $fieldName not defined on $currentType")
-                val fieldJavaType = when(fieldType) {
-                    is IntType -> ConstantDescs.CD_int
-                    is UserDefinedType -> ClassDesc.of(fieldType.name)
-                    else -> throw IllegalArgumentException("Unexpected field type: $fieldType")
-                }
-                codeBuilder.getfield(currentJavaType, variableAccess.VarName().text, fieldJavaType)
-                variableAccess = variableAccess.variableAccess()
-                currentType = fieldType
-                currentJavaType = fieldJavaType
-            }
-        } else if(ctx.IntLiteral() != null) {
-            codeBuilder.ldc(codeBuilder.constantPool().intEntry(ctx.IntLiteral().text.toInt()))
-        } else if(ctx.op != null) {
-            when (ctx.op.type) {
-                Mult -> codeBuilder.imul()
-                Div -> codeBuilder.idiv()
-                Add -> codeBuilder.iadd()
-                Sub -> codeBuilder.isub()
-                Mod -> codeBuilder.irem()
-                else -> throw IllegalArgumentException("Unexpected operator: ${ctx.op.text}")
-            }
-        } else {
-            throw IllegalArgumentException("Unexpected expression: $ctx")
         }
     }
 }

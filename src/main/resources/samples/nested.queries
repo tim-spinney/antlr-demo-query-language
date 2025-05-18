@@ -1,7 +1,7 @@
 QUERY nonNegative ON Rectangle:
-WHERE 1 >= 0
+WHERE it.topLeft.x >= 0 AND it.topLeft.y >= 0
 ;
 
 QUERY nonEmpty ON Rectangle:
-WHERE 1 > 0
+WHERE it.width > 0 OR it.height > 0
 ;
